@@ -18,6 +18,6 @@ const averageGrade = (maths, physics, english) => {
   let englishGrade = Number(english);
   console.log(`Sum: ${mathGrade + physicsGrade + englishGrade}`);
   console.log(`Average: ${(mathGrade + physicsGrade + englishGrade) / 3}`);
-  return;
+  // return; (doesnt change anything)
 };
 averageGrade(4, 4, 4);
