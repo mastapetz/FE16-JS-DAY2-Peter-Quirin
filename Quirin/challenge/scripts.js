@@ -1,9 +1,9 @@
 let atm = {
     availableNotes: {
-        '10': 0,
-        '20': 1,
-        '50': 0,
-        '100': 0
+        '10': 10,
+        '20': 8,
+        '50': 12,
+        '100': 4
     },
     showBalance() {
         let message = 'Your balance is: <br/>';
@@ -32,56 +32,39 @@ let atm = {
         let str = '' + amount;
         let digits = str.length;
         let currDigit = digits;
-        let amountNeeded = amount;
+        let amountNeeded = Number(amount);
 
         let hundreds = Number(str.slice(0, -2));
         let tens = Number(str.charAt(digits - 2));
 
-        let availableNotes_copy = structuredClone(this.availableNotes);
+        let withdraw100 = Math.floor(amountNeeded / 100) > this.availableNotes['100'] ? this.availableNotes['100'] : Math.floor(amountNeeded / 100);
+        amountNeeded -= withdraw100 * 100;
 
-        tens = Number(str.slice(0, digits - 1));
+        let withdraw50 = Math.floor(amountNeeded / 50) > this.availableNotes['50'] ? this.availableNotes['50'] : Math.floor(amountNeeded / 50);
+        amountNeeded -= withdraw50 * 50;
 
-        let withdraw100 = 0;
-        let withdraw50 = 0;
-        let withdraw20 = 0;
-        let withdraw10 = 0;
+        let withdraw20 = Math.floor(amountNeeded / 20) > this.availableNotes['20'] ? this.availableNotes['20'] : Math.floor(amountNeeded / 20);
+        amountNeeded -= withdraw20 * 20;
 
-        while (tens > 0) {
-            if (tens >= 10 && availableNotes_copy['100'] > 0) {
-                withdraw100++;
-                tens -= 10;
-                availableNotes_copy['100']--;
-                continue;
-            }
-            if (tens >= 5 && availableNotes_copy['50'] > 0) {
-                withdraw50++;
-                tens -= 5;
-                availableNotes_copy['50']--;
-                continue;
-            }
-            if (tens >= 2 && availableNotes_copy['20'] > 0) {
-                withdraw20++;
-                tens -= 2;
-                availableNotes_copy['20']--;
-                continue;
-            }
-            if (tens >= 1 && availableNotes_copy['10'] > 0) {
-                withdraw10++;
-                tens--;
-                availableNotes_copy['10']--;
-            } else if (availableNotes_copy['10'] == 0 && tens > 0) {
-                return 'Not withdrawable';
-            }
-        }
+        let withdraw10 = Math.floor(amountNeeded / 10) > this.availableNotes['10'] ? this.availableNotes['10'] : Math.floor(amountNeeded / 10);
+        amountNeeded -= withdraw10 * 10;
 
+
+        console.log('Trying to withdraw ...');
         console.log('Withdrawing 100: ', withdraw100);
         console.log('Withdrawing 50: ', withdraw50);
         console.log('Withdrawing 20: ', withdraw20);
         console.log('Withdrawing 10: ', withdraw10);
 
-        this.availableNotes = structuredClone(availableNotes_copy);
 
-        return 'Withdrew ' + amount + '!';
+        if (amountNeeded == 0) {
+            this.availableNotes['100'] -= withdraw100;
+            this.availableNotes['50'] -= withdraw50;
+            this.availableNotes['20'] -= withdraw20;
+            this.availableNotes['10'] -= withdraw100;
+            return 'Withdrew ' + amount + '!';
+        } else return 'Not withdrawable!';
+
     }
 
 };
@@ -97,6 +80,3 @@ document.getElementById('balance').onclick = () => {
     let result = atm.showBalance();
     output.innerHTML = result;
 }
-
-// console.log(atm.tryWithdrawing(1460));
-// console.log(atm.showBalance());
