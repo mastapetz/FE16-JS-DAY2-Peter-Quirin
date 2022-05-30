@@ -1,9 +1,9 @@
 let atm = {
     availableNotes: {
-        '10': 5,
-        '20': 10,
-        '50': 20,
-        '100': 13
+        '10': 0,
+        '20': 1,
+        '50': 0,
+        '100': 0
     },
     showBalance() {
         let message = 'Your balance is: <br/>';
@@ -69,8 +69,8 @@ let atm = {
                 withdraw10++;
                 tens--;
                 availableNotes_copy['10']--;
-            } else {
-                break;
+            } else if (availableNotes_copy['10'] == 0 && tens > 0) {
+                return 'Not withdrawable';
             }
         }
 
